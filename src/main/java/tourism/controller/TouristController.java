@@ -56,10 +56,4 @@ public class TouristController {
     public String deleteOneNamedAttraction(@PathVariable String name){
         return "";
     }
-
-    //    GET /attractions/tags
-    @GetMapping("tags")
-    public String getAllTags(){
-        return "";
-    }
 }
