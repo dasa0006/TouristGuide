@@ -1,4 +1,8 @@
-package tourism.repository;
+package com.example.touristguideapi.repository;
+import com.example.touristguideapi.model.TouristAttraction;
+import org.springframework.stereotype.Repository;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
 import tourism.model.TouristAttraction;
