@@ -1,49 +1,31 @@
-package com.example.touristguideapi.repository;
-import com.example.touristguideapi.model.TouristAttraction;
-import org.springframework.stereotype.Repository;
-import java.util.ArrayList;
-import java.util.List;
+package tourism.repository;
 
-import org.springframework.stereotype.Repository;
 import tourism.model.TouristAttraction;
-
+import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Repository
 public class TouristRepository {
 //    attr - arrList
-    private ArrayList<TouristAttraction> attractions;
+    private final ArrayList<TouristAttraction> attractions = new ArrayList<>(List.of(
+            new TouristAttraction("Tivoli", "København", "Forlystelsespark i hjertet af København.", List.of("forlystelser", "familie", "kultur")),
+            new TouristAttraction("Nyhavn", "København", "Farverig havnepromenade med restauranter og barer.", List.of("havn", "restauranter", "historie")),
+            new TouristAttraction("Den Lille Havfrue", "København", "Berømt statue inspireret af H.C. Andersen.", List.of("statue", "kultur", "historie")),
+            new TouristAttraction("ARoS", "Aarhus", "Kunstmuseum i Aarhus med regnbuepanorama.", List.of("kunst", "museum", "arkitektur")),
+            new TouristAttraction("Egeskov Slot", "Kværndrup", "Renæssanceslot på Fyn omgivet af voldgrav.", List.of("slot", "historie", "have")),
+            new TouristAttraction("Aalborg Zoo", "Aalborg", "Dyrepark med mere end 100 forskellige arter.", List.of("dyr", "familie", "natur")),
+            new TouristAttraction("Moesgaard Museum", "Aarhus", "Museum i Aarhus med arkæologi og kulturhistorie.", List.of("museum", "historie", "arkæologi")),
+            new TouristAttraction("Kronborg Slot", "Helsingør", "Renæssanceslot i Helsingør, kendt fra Shakespeares Hamlet.", List.of("slot", "kultur", "historie")),
+            new TouristAttraction("Odense Zoo", "Odense", "Familievenlig zoologisk have på Fyn.", List.of("dyr", "familie", "natur")),
+            new TouristAttraction("Hammershus", "Bornholm", "Nordeuropas største borgruin på Bornholm.", List.of("ruin", "historie", "arkitektur")),
+            new TouristAttraction("Grenen", "Skagen", "Danmarks nordligste punkt, hvor to have mødes.", List.of("natur", "strand", "geografi")),
+            new TouristAttraction("Legoland", "Billund", "Forlystelsespark i Billund bygget af LEGO-klodser.", List.of("forlystelser", "familie", "leg")
+            )));
 
-//    constructor - populate arrList
-TouristRepository(){
-    attractions = new ArrayList<>();
 
-    String[][] data = {
-            {"Tivoli", "København", "Forlystelsespark i hjertet af København.", "forlystelser, familie, kultur"},
-            {"Nyhavn", "København", "Farverig havnepromenade med restauranter og barer.", "havn, restauranter, historie"},
-            {"Den Lille Havfrue", "København", "Berømt statue inspireret af H.C. Andersen.", "statue, kultur, historie"},
-            {"ARoS", "Aarhus", "Kunstmuseum i Aarhus med regnbuepanorama.", "kunst, museum, arkitektur"},
-            {"Egeskov Slot", "Kværndrup", "Renæssanceslot på Fyn omgivet af voldgrav.", "slot, historie, have"},
-            {"Aalborg Zoo", "Aalborg", "Dyrepark med mere end 100 forskellige arter.", "dyr, familie, natur"},
-            {"Moesgaard Museum", "Aarhus", "Museum i Aarhus med arkæologi og kulturhistorie.", "museum, historie, arkæologi"},
-            {"Kronborg Slot", "Helsingør", "Renæssanceslot i Helsingør, kendt fra Shakespeares Hamlet.", "slot, kultur, historie"},
-            {"Odense Zoo", "Odense", "Familievenlig zoologisk have på Fyn.", "dyr, familie, natur"},
-            {"Hammershus", "Bornholm", "Nordeuropas største borgruin på Bornholm.", "ruin, historie, arkitektur"},
-            {"Grenen", "Skagen", "Danmarks nordligste punkt, hvor to have mødes.", "natur, strand, geografi"},
-            {"Legoland", "Billund", "Forlystelsespark i Billund bygget af LEGO-klodser.", "forlystelser, familie, leg"}
-    };
 
-    // Loop makes objects and adds to collection
-    for (String[] entry : data) {
-        TouristAttraction attraction = new TouristAttraction();
-        attraction.setName(entry[0]);
-        attraction.setCity(entry[1]);
-        attraction.setDescription(entry[1]);
-        attraction.setTags(entry[1]);
-        attractions.add(attraction);
-    }
-}
 
 //    getAttractions
     public ArrayList<TouristAttraction> getAllAttractions() {
@@ -65,8 +47,8 @@ TouristRepository(){
         List<String> listOfTags = new ArrayList<String>();
 
         for (TouristAttraction attraction : attractions){
-            String attractionCityName = attraction.getTags();
-            listOfTags.add(attractionCityName);
+            List<String> attractionTags = attraction.getTags();
+            listOfTags.addAll(attractionTags);
         }
         return listOfTags;
     }
