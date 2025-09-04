@@ -2,6 +2,8 @@ package tourism.repository;
 
 import tourism.model.TouristAttraction;
 import org.springframework.stereotype.Repository;
+
+import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,16 @@ public class TouristRepository {
 
 
 
+    //    getTagsFromOneNamedAttraction
+    public List<String> getTagsFromOneNamedAttraction(String attractionName) {
+        for (TouristAttraction attraction : attractions) {
+            if (attraction.getName().equalsIgnoreCase(attractionName)) {
+                return attraction.getTags();
+            }
+        }
+        return null;
+    }
+
 
 //    getAttractions
     public ArrayList<TouristAttraction> getAllAttractions() {
@@ -35,7 +47,7 @@ public class TouristRepository {
 //    getOneNamedAttraction
     public TouristAttraction getOneNamedAttraction(String attractionName) {
         for (TouristAttraction attraction : attractions) {
-            if (attraction.getName().equals(attractionName)) {
+            if (attraction.getName().equalsIgnoreCase(attractionName)) {
                 return attraction;
             }
         }
@@ -52,6 +64,9 @@ public class TouristRepository {
         }
         return listOfTags;
     }
+
+
+
 
 //    getCities
     public List<String> getCities(){
