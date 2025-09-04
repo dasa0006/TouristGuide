@@ -42,8 +42,8 @@ public class TouristRepository {
         return null;
     }
 
-//    getTags
-    public List<String> getTags(){
+//    getAllAttractionsTags
+    public List<String> getAllAttractionsTags(){
         List<String> listOfTags = new ArrayList<String>();
 
         for (TouristAttraction attraction : attractions){
