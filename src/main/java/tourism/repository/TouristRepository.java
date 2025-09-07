@@ -65,7 +65,8 @@ public class TouristRepository {
     }
 
 //    addOneNamedAttraction
-    public void addOneNamedAttractionToList() {
+    public void addOneNamedAttractionToList(TouristAttraction touristAttraction) {
+        attractions.add(touristAttraction);
     }
 
 //    updateOneNamedAttraction

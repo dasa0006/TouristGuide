@@ -18,6 +18,15 @@ public class TouristService {
         return repository.getOneNamedAttraction(name);
     }
 
+    public List<String> getTagsFromOneNamedAttraction(String attractionName) {
+        for (TouristAttraction attraction : repository.getAllAttractions()) {
+            if (attraction.getName().equalsIgnoreCase(attractionName)) {
+                return attraction.getTags();
+            }
+        }
+        return null;
+    }
+
     public List<String> getTags() {
         return repository.getAllAttractionsTags();
     }

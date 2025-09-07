@@ -4,10 +4,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import tourism.model.TouristAttraction;
-import tourism.service.TouristService;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("attractions")
@@ -22,26 +18,21 @@ public class TouristController {
     //    GET /attractions
     @GetMapping
     public String getAttractions(){
-        List<TouristAttraction> a = service.getAttractions();
         return "";
     }
     //    GET /attractions/{name}
     @GetMapping("{name}")
     public String getOneNamedAttraction(@PathVariable String name){
-        = service.getOneNamedAttraction(name);
         return "";
     }
     //    GET /attractions/{name}/tags
     @GetMapping("{name}/tags")
     public String getTagsFromOneNamedAttraction(@PathVariable String name){
-        = service.getTags();
         return "";
     }
-
     //    GET /attractions/add
     @GetMapping("add")
     public String addNamedAttraction(){
-        service.addNamedAttraction();
         return "";
     }
     //    POST /attractions/save
@@ -57,13 +48,11 @@ public class TouristController {
     //    POST /attractions/update
     @PostMapping("update")
     public String updateAttractions(){
-        service.updateAttraction();
         return "";
     }
     //    POST /attractions/delete/{name}
     @PostMapping("delete/{name}")
     public String deleteOneNamedAttraction(@PathVariable String name){
-        service.deleteAttraction();
         return "";
     }
 }
