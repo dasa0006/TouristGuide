@@ -24,65 +24,26 @@ public class TouristRepository {
             new TouristAttraction("Legoland", "Billund", "Forlystelsespark i Billund bygget af LEGO-klodser.", List.of("forlystelser", "familie", "leg")
             )));
 
-
-
-
 //    getAttractions
     public ArrayList<TouristAttraction> getAllAttractions() {
         return attractions;
     }
 
-//    getOneNamedAttraction
-    public TouristAttraction getOneNamedAttraction(String attractionName) {
-        for (TouristAttraction attraction : attractions) {
-            if (attraction.getName().equals(attractionName)) {
-                return attraction;
-            }
-        }
-        return null;
-    }
-
-//    getAllAttractionsTags
-    public List<String> getAllAttractionsTags(){
-        List<String> listOfTags = new ArrayList<String>();
-
-        for (TouristAttraction attraction : attractions){
-            List<String> attractionTags = attraction.getTags();
-            listOfTags.addAll(attractionTags);
-        }
-        return listOfTags;
-    }
-
-//    getCities
-    public List<String> getCities(){
-        List<String> listOfCities = new ArrayList<String>();
-
-        for (TouristAttraction attraction : attractions){
-            String attractionCityName = attraction.getCity();
-            listOfCities.add(attractionCityName);
-        }
-        return listOfCities;
-    }
-
 //    addOneNamedAttraction
-    public void addOneNamedAttractionToList(TouristAttraction touristAttraction) {
-        attractions.add(touristAttraction);
+    public TouristAttraction addOneNamedAttractionToList(TouristAttraction touristAttraction) {
+        boolean isAddOpSuccess = attractions.add(touristAttraction);
+        return isAddOpSuccess ? touristAttraction : null;
     }
 
 //    updateOneNamedAttraction
-    public void updateOneNamedAttraction(TouristAttraction touristAttraction) {
-        for (int i = 0; i < attractions.size(); i++) {
-            TouristAttraction attraction = attractions.get(i);
-            if (attraction.getName().equals(touristAttraction.getName())) {
-                attractions.set(i, touristAttraction); // replace old object with updated one
-                break; // stop after first match
-            }
-        }
+    public TouristAttraction updateOneNamedAttraction(int index, TouristAttraction updatedTouristAttraction) {
+        return attractions.set(index, updatedTouristAttraction);
     }
 
 //    deleteOneNamedAttractionFromList
-    public void deleteOneNamedAttractionFromList(String namedAttractionToRemove) {
-        attractions.removeIf(namedAttraction -> namedAttraction.getName().equals(namedAttractionToRemove));
+    public boolean deleteOneNamedAttractionFromList(String attractionName) {
+        return attractions.removeIf(namedAttractionToRemove -> namedAttractionToRemove.getName().equals(attractionName));
+
     }
 
 }

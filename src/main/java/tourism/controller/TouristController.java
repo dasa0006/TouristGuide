@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("attractions")
 public class TouristController {
 
-    private final TouristService service;
+//    private final TouristService service;
 
-    public TouristController(TouristService service) {
-        this.service = service;
-    }
+//    public TouristController(TouristService service) {
+//        this.service = service;
+//    }
 
     //    GET /attractions
     @GetMapping
