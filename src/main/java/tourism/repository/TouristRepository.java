@@ -5,10 +5,16 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Repository class for managing a list of tourist attractions.
+ * Provides basic CRUD operations on an in-memory list of {@link TouristAttraction} objects.
+ */
 @Repository
 public class TouristRepository {
-//    attr - arrList
+
+    /**
+     * In-memory list of tourist attractions initialized with predefined data.
+     */
     private final ArrayList<TouristAttraction> attractions = new ArrayList<>(List.of(
             new TouristAttraction("Tivoli", "København", "Forlystelsespark i hjertet af København.", List.of("forlystelser", "familie", "kultur")),
             new TouristAttraction("Nyhavn", "København", "Farverig havnepromenade med restauranter og barer.", List.of("havn", "restauranter", "historie")),
@@ -21,29 +27,49 @@ public class TouristRepository {
             new TouristAttraction("Odense Zoo", "Odense", "Familievenlig zoologisk have på Fyn.", List.of("dyr", "familie", "natur")),
             new TouristAttraction("Hammershus", "Bornholm", "Nordeuropas største borgruin på Bornholm.", List.of("ruin", "historie", "arkitektur")),
             new TouristAttraction("Grenen", "Skagen", "Danmarks nordligste punkt, hvor to have mødes.", List.of("natur", "strand", "geografi")),
-            new TouristAttraction("Legoland", "Billund", "Forlystelsespark i Billund bygget af LEGO-klodser.", List.of("forlystelser", "familie", "leg")
-            )));
+            new TouristAttraction("Legoland", "Billund", "Forlystelsespark i Billund bygget af LEGO-klodser.", List.of("forlystelser", "familie", "leg"))
+    ));
 
-//    getAttractions
+    /**
+     * Retrieves the full list of tourist attractions.
+     *
+     * @return a list of all {@link TouristAttraction} objects.
+     */
     public ArrayList<TouristAttraction> getAllAttractions() {
         return attractions;
     }
 
-//    addOneNamedAttraction
+    /**
+     * Adds a new tourist attraction to the list.
+     *
+     * @param touristAttraction the {@link TouristAttraction} to add.
+     * @return the added attraction if successful, otherwise {@code null}.
+     */
     public TouristAttraction addOneNamedAttractionToList(TouristAttraction touristAttraction) {
         boolean isAddOpSuccess = attractions.add(touristAttraction);
         return isAddOpSuccess ? touristAttraction : null;
     }
 
-//    updateOneNamedAttraction
+    /**
+     * Updates an existing tourist attraction at the specified index.
+     *
+     * @param index the index of the attraction to update.
+     * @param updatedTouristAttraction the new {@link TouristAttraction} data.
+     * @return the previous attraction that was replaced.
+     * @throws IndexOutOfBoundsException if the index is invalid.
+     */
     public TouristAttraction updateOneNamedAttraction(int index, TouristAttraction updatedTouristAttraction) {
         return attractions.set(index, updatedTouristAttraction);
     }
 
-//    deleteOneNamedAttractionFromList
+    /**
+     * Deletes a tourist attraction from the list by its name.
+     *
+     * @param attractionName the name of the attraction to remove.
+     * @return {@code true} if an attraction was removed, {@code false} otherwise.
+     */
     public boolean deleteOneNamedAttractionFromList(String attractionName) {
-        return attractions.removeIf(namedAttractionToRemove -> namedAttractionToRemove.getName().equals(attractionName));
-
+        return attractions.removeIf(namedAttractionToRemove ->
+                namedAttractionToRemove.getName().equals(attractionName));
     }
-
 }
