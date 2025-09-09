@@ -18,7 +18,7 @@ public class TouristController {
     //    GET /attractions
     @GetMapping
     public String getAttractions(){
-        return "";
+        return "attractionsList";
     }
     //    GET /attractions/{name}
     @GetMapping("{name}")
@@ -28,31 +28,31 @@ public class TouristController {
     //    GET /attractions/{name}/tags
     @GetMapping("{name}/tags")
     public String getTagsFromOneNamedAttraction(@PathVariable String name){
-        return "";
+        return "tags";
     }
     //    GET /attractions/add
     @GetMapping("add")
     public String addNamedAttraction(){
-        return "";
+        return "addAttraction";
     }
     //    POST /attractions/save
     @PostMapping("save")
     public String saveAttractions(){
-        return "";
+        return "redirect:/attractions";
     }
     //    GET /attractions/{name}/edit
     @GetMapping("{name}/edit")
     public String editOneNamedAttraction(@PathVariable String name){
-        return "";
+        return "updateAttraction";
     }
     //    POST /attractions/update
     @PostMapping("update")
     public String updateAttractions(){
-        return "";
+        return "redirect:/attractions";
     }
     //    POST /attractions/delete/{name}
     @PostMapping("delete/{name}")
     public String deleteOneNamedAttraction(@PathVariable String name){
-        return "";
+        return "redirect:/attractions";
     }
 }
