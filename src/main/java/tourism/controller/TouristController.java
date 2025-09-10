@@ -1,4 +1,5 @@
 package tourism.controller;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -7,15 +8,33 @@ import tourism.model.TouristAttraction;
 
 import java.util.ArrayList;
 
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
+
+import tourism.model.TouristAttraction;
+import tourism.service.TouristService;
+
+import java.util.List;
+
+
+
 @Controller
 @RequestMapping("attractions")
 public class TouristController {
 
-//    private final TouristService service;
+    private final TouristService service;
 
-//    public TouristController(TouristService service) {
-//        this.service = service;
-//    }
+    public TouristController(TouristService service) {
+        this.service = service;
+    }
 
     //    GET /attractions
     @GetMapping
@@ -27,19 +46,31 @@ public class TouristController {
     public String getOneNamedAttraction(@PathVariable String name){
         return "";
     }
+
     //    GET /attractions/{name}/tags
     @GetMapping("{name}/tags")
-    public String getTagsFromOneNamedAttraction(@PathVariable String name){
+    public String getTagsFromOneNamedAttraction(@PathVariable String name, Model model){
+        TouristAttraction a = service.getOneNamedAttraction(name);
+        if (a == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Attraction not found");
+
+        model.addAttribute("attraction", a);
+        model.addAttribute("tags", a.getTags() == null ? List.of() : a.getTags());
+        // Fallback: returner tom liste i stedet for null, så Thymeleaf kan loope sikkert
+
         return "tags";
     }
+
     //    GET /attractions/add
     @GetMapping("add")
-    public String addNamedAttraction(){
+    public String addNamedAttraction(Model model){
+        model.addAttribute("cities", service.getCities());
+        model.addAttribute("allTags", service.getTags());
         return "addAttraction";
     }
     //    POST /attractions/save
     @PostMapping("save")
-    public String saveAttractions(){
+    public String saveAttractions(@RequestBody TouristAttraction touristAttraction){
+        service.addNamedAttraction(touristAttraction);
         return "redirect:/attractions";
     }
     //    GET /attractions/{name}/edit
