@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import tourism.model.TouristAttraction;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,10 +76,17 @@ public class TouristController {
         service.addNamedAttraction(touristAttraction);
         return "redirect:/attractions";
     }
-    //    GET /attractions/{name}/edit
+    // GET /attractions/{name}/edit  -> show the edit form
     @GetMapping("{name}/edit")
-    public String editOneNamedAttraction(@PathVariable String name){
-        return "updateAttraction";
+    public String editOneNamedAttraction(@PathVariable String name, Model model) {
+        TouristAttraction attraction = service.getOneNamedAttraction(name);
+        if (attraction == null) {
+            return "redirect:/attractions";
+        }
+        model.addAttribute("attraction", attraction);               // object to bind
+        model.addAttribute("cities", service.getCities());   // dropdown options
+        model.addAttribute("tags", service.getTags());       // checkbox options
+        return "updateAttraction";                                   // view name
     }
 
     //    POST /attractions/update
@@ -87,7 +96,6 @@ public class TouristController {
         TouristAttraction a = service.updateAttraction(form);
 
         if (a == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
         return "redirect:/attractions";
     }
 
