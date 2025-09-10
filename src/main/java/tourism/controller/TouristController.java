@@ -1,10 +1,8 @@
 package tourism.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import tourism.model.TouristAttraction;
 import tourism.repository.TouristRepository;
 import tourism.service.TouristService;
 
@@ -43,14 +41,22 @@ public class TouristController {
     public String saveAttractions(){
         return "redirect:/attractions";
     }
-    //    GET /attractions/{name}/edit
+    // GET /attractions/{name}/edit  -> show the edit form
     @GetMapping("{name}/edit")
-    public String editOneNamedAttraction(@PathVariable String name){
-        return "updateAttraction";
+    public String editOneNamedAttraction(@PathVariable String name, Model model) {
+        TouristAttraction attraction = service.getOneNamedAttraction(name);
+        if (attraction == null) {
+            return "redirect:/attractions";
+        }
+        model.addAttribute("attraction", attraction);               // object to bind
+        model.addAttribute("cities", service.getCities());   // dropdown options
+        model.addAttribute("tags", service.getTags());       // checkbox options
+        return "updateAttraction";                                   // view name
     }
     //    POST /attractions/update
     @PostMapping("update")
-    public String updateAttractions(){
+    public String updateAttractions(@ModelAttribute TouristAttraction attraction) {
+        service.updateAttraction(attraction);
         return "redirect:/attractions";
     }
     //    POST /attractions/delete/{name}
