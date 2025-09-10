@@ -1,19 +1,19 @@
 package tourism.controller;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import tourism.model.TouristAttraction;
+import tourism.service.TouristService;
 
 @Controller
 @RequestMapping("attractions")
 public class TouristController {
 
-//    private final TouristService service;
+    private final TouristService service;
 
-//    public TouristController(TouristService service) {
-//        this.service = service;
-//    }
+    public TouristController(TouristService service) {
+        this.service = service;
+    }
 
     //    GET /attractions
     @GetMapping
@@ -32,12 +32,15 @@ public class TouristController {
     }
     //    GET /attractions/add
     @GetMapping("add")
-    public String addNamedAttraction(){
+    public String addNamedAttraction(Model model){
+        model.addAttribute("cities", service.getCities());
+        model.addAttribute("allTags", service.getTags());
         return "addAttraction";
     }
     //    POST /attractions/save
     @PostMapping("save")
-    public String saveAttractions(){
+    public String saveAttractions(@RequestBody TouristAttraction touristAttraction){
+        service.addNamedAttraction(touristAttraction);
         return "redirect:/attractions";
     }
     //    GET /attractions/{name}/edit
