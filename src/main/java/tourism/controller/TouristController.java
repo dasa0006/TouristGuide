@@ -17,13 +17,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import tourism.repository.TouristRepository;
+import tourism.service.TouristService;
 import org.springframework.web.server.ResponseStatusException;
 
 import tourism.model.TouristAttraction;
 import tourism.service.TouristService;
 
 import java.util.List;
-
 
 
 @Controller
@@ -35,11 +36,11 @@ public class TouristController {
     public TouristController(TouristService service) {
         this.service = service;
     }
-
     //    GET /attractions
     @GetMapping
-    public String getAttractions(){
-        return "attractionsList";
+    public String getAttractions(Model model){
+        model.addAttribute("attractions", service.getAttractions());
+        return "attractionList";
     }
     //    GET /attractions/{name}
     @GetMapping("{name}")

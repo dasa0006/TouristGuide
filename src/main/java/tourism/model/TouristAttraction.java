@@ -3,14 +3,14 @@ import java.util.List;
 
 public class TouristAttraction {
     private String name;
-    private String description;
     private String city;
+    private String description;
     private List<String> tags;
 
-    public TouristAttraction(String name, String description, String city, List<String> tags) {
+    public TouristAttraction(String name, String city, String description, List<String> tags) {
         this.name = name;
-        this.description = description;
         this.city = city;
+        this.description = description;
         this.tags = tags;
     }
 
