@@ -2,6 +2,15 @@ package tourism.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import tourism.model.TouristAttraction;
+
+import java.util.ArrayList;
+
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +23,7 @@ import tourism.model.TouristAttraction;
 import tourism.service.TouristService;
 
 import java.util.List;
+
 
 
 @Controller
@@ -68,11 +78,18 @@ public class TouristController {
     public String editOneNamedAttraction(@PathVariable String name){
         return "updateAttraction";
     }
+
     //    POST /attractions/update
-    @PostMapping("update")
-    public String updateAttractions(){
+    @PostMapping("/update")
+    public String updateAttraction(@ModelAttribute TouristAttraction form) {
+        if (form.getTags() == null) form.setTags(new ArrayList<>());
+        TouristAttraction a = service.updateAttraction(form);
+
+        if (a == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
         return "redirect:/attractions";
     }
+
     //    POST /attractions/delete/{name}
     @PostMapping("delete/{name}")
     public String deleteOneNamedAttraction(@PathVariable String name){
