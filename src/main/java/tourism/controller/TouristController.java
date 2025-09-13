@@ -100,8 +100,9 @@ public class TouristController {
     }
 
     //    POST /attractions/delete/{name}
-    @PostMapping("delete/{name}")
+    @PostMapping("/delete/{name}")
     public String deleteOneNamedAttraction(@PathVariable String name){
+        service.deleteAttraction(name);
         return "redirect:/attractions";
     }
 }
