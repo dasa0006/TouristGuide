@@ -22,10 +22,13 @@
             <option value="" class="selection-dropdown-option" th:each="p : ${cities}" th:value="${p}" th:text="${p}"></option>
         </select>
         <br>
+    <label>Tags:</label><br/>
+    <div th:each="t : ${allTags}">
         <label>
-            Tags:
-            <input type="checkbox" class="tags-checkbox-input" th:each="tag : ${allTags}" th:text="${tag}">
-        </label>
+            <input type="checkbox" th:field="*{tags}" th:value="${t}" />
+            <span th:text="${t}"></span>
+        </label><br/>
+    </div>
         <br>
         <button type="submit">Ok</button>
         <a th:href="@{/attractions}">
