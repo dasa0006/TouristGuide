@@ -6,21 +6,39 @@
     <link th:href="@{/main.css}" rel="stylesheet">
 </head>
 <body>
-<h1>Tourist Attractions</h1>
+<h1>Touristattraktioner</h1>
+
+<a th:href="@{/}">tilbage</a>
+
 <table>
     <thead>
     <tr>
-        <th>Name</th>
-        <th>Description</th>
+        <th>Navn</th>
+        <th>Beskrivelse</th>
+        <th>By</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="attraction : ${attractions}">
-        <td th:text="${attraction.name}"></td>
-        <td th:text="${attraction.city}"></td>
-
+        <td th:text="${attraction.name}">YO</td>
+        <td th:text="${attraction.description}">YO2</td>
+        <td th:text="${attraction.city}">YO2</td>
+        <td class="attraction-element-action-buttons">
+            <form th:action="@{/attractions/{name}/edit(name=${attraction.name})}" method="get">
+                <button>Opdater</button>
+            </form>
+            <form th:action="@{/attractions/delete/{name}(name=${attraction.name})}" method="post">
+                <button>Slet</button>
+            </form>
+            <form th:action="@{/attractions/{name}/tags(name=${attraction.name})}" method="get">
+                <button>Tags</button>
+            </form>
+        </td>
     </tr>
     </tbody>
 </table>
+<form th:action="@{/attractions/add}" method="get">
+    <button class="add-attractions-button">Tilføj attraktion</button>
+</form>
 </body>
 </html>

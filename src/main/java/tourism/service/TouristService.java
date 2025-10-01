@@ -59,9 +59,11 @@ public class TouristService {
     public List<String> getTags() {
         List<String> listOfTags = new ArrayList<>();
         for (TouristAttraction attraction : repository.getAllAttractions()) {
-            listOfTags.addAll(attraction.getTags());
+            if (attraction.getTags() != null) {   // avoid NPE
+                listOfTags.addAll(attraction.getTags());
+            }
         }
-        return listOfTags;
+        return listOfTags.stream().distinct().toList();
     }
 
     /**
@@ -74,7 +76,7 @@ public class TouristService {
         for (TouristAttraction attraction : repository.getAllAttractions()) {
             listOfCities.add(attraction.getCity());
         }
-        return listOfCities;
+        return listOfCities.stream().distinct().toList();
     }
 
     /**

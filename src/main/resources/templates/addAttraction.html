@@ -5,8 +5,35 @@
     <title>Title</title>
 </head>
 <body>
-<h1 th:text="${cities}"></h1>
-<h1 th:text="${allTags}"></h1>
+    <h1 class="add-attraction-form-title">Tilføj Turistattraktion</h1>
+<form action="#" class="add-attraction-form" role="form" method="post" th:action="@{/attractions/save}" th:object="${touristAttraction}">
+    <label>
+        Navn:
+        <input type="text" th:field="*{name}" />
+    </label>
+    <br>
+    <label>Beskrivelse:
+        <textarea th:field="*{description}"></textarea>
+    </label>
 
+    <br>
+        <label for="">By: </label>
+        <select name="" id="" class="city-selection-dropdown" th:field="*{city}">
+            <option value="" class="selection-dropdown-option" th:each="p : ${cities}" th:value="${p}" th:text="${p}"></option>
+        </select>
+        <br>
+    <label>Tags:</label><br/>
+    <div th:each="t : ${allTags}">
+        <label>
+            <input type="checkbox" th:field="*{tags}" th:value="${t}" />
+            <span th:text="${t}"></span>
+        </label><br/>
+    </div>
+        <br>
+        <button type="submit">Ok</button>
+        <a th:href="@{/attractions}">
+            <button type="button">Fortryd</button>
+        </a>
+    </form>
 </body>
 </html>

@@ -13,3 +13,94 @@ table, th, td {
 th {
     background-color: #f2f2f2;
 }
+
+
+/**/
+
+/**,html,body{*/
+/*    margin:0;*/
+/*    padding:0;*/
+/*    border:0;*/
+/*    font-family: Calibri, serif;*/
+/*}*/
+
+/*body{*/
+/*    background-color: aliceblue;*/
+/*    max-width: 100vw;*/
+/*    overflow: hidden;*/
+/*}*/
+
+section {
+    width: 100%;
+}
+section.nav-container{
+    display: flex;
+    padding: 1rem;
+    justify-content: center;
+}
+
+nav.nav {
+    border-bottom: bisque 1px solid;
+}
+
+div.nav-buttons-container {
+    display: flex;
+}
+
+div.nav-button {
+    align-content: center;
+    height: 2rem;
+    border-radius: 3px;
+    padding-inline: 12px;
+    cursor: pointer;
+    opacity: 60%;
+}
+
+div.nav-button:hover{
+    background-color: lightsteelblue;
+    opacity: 1;
+}
+
+section.main-content-container {
+    display: flex;
+}
+
+div.main-content-grid.center {
+    max-width: 60%;
+}
+
+div.main-content-grid.side{
+    width: 33%;
+    max-width: 33%;
+}
+
+div.main-content-grid.side.picture{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div.welcome-text-container {
+    margin-bottom: 3rem;
+}
+
+h2.welcome-text-title {
+    margin-block: 2rem;
+}
+
+h3.helpful-links-title {
+    margin-block: 1rem;
+}
+
+div.helpful-links-list-item-content {
+    display: flex;
+}
+
+div.helpful-links-list-item-label{
+    margin-right: .5rem;
+}
+
+section.footer-container {
+    margin-top: 5rem;
+    margin-left: 15%;
+}
