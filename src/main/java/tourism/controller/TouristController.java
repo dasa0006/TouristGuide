@@ -9,21 +9,13 @@ import tourism.model.TouristAttraction;
 import java.util.ArrayList;
 
 
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 
-import tourism.model.TouristAttraction;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import tourism.repository.TouristRepository;
-import tourism.service.TouristService;
-import org.springframework.web.server.ResponseStatusException;
 
-import tourism.model.TouristAttraction;
 import tourism.service.TouristService;
 
 import java.util.List;
