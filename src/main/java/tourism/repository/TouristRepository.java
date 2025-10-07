@@ -1,5 +1,6 @@
 package tourism.repository;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import tourism.model.TouristAttraction;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
@@ -11,6 +12,11 @@ import java.util.List;
  */
 @Repository
 public class TouristRepository {
+    private final JdbcTemplate jdbcTemplate;
+
+    public TouristRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     /**
      * In-memory list of tourist attractions initialized with predefined data.
