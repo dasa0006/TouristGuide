@@ -48,6 +48,8 @@ public class TouristController {
 
 
 
+
+
     //    GET /attractions/add
     @GetMapping("add")
     public String addNamedAttraction(Model model){

@@ -1,8 +1,5 @@
 package tourism.repository;
-
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import tourism.model.TouristAttraction;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
@@ -36,39 +33,70 @@ public class TouristRepository {
             new TouristAttraction("Legoland", "Billund", "Forlystelsespark i Billund bygget af LEGO-klodser.", List.of("forlystelser", "familie", "leg"))
     ));
 
-    // TODO: tags
-
-    private static final RowMapper<TouristAttraction> ATTRACTION_MAPPER =
-            (rs, rowNum) -> new TouristAttraction(
-                    rs.getString("name"),
-                    rs.getString("city"),
-                    rs.getString("description"),
-                    List.of()  // tags, tom liste for nu
-            );
-
-    public List<TouristAttraction> getAllAttractions() {
+    public java.util.List<TouristAttraction> getAllAttractions() {
         String sql = """
-        SELECT ta.name, c.name AS city, ta.description
-        FROM tourist_attraction ta
-        LEFT JOIN city c ON ta.city_id = c.city_id
-        ORDER BY ta.name
-    """;
-        return jdbcTemplate.query(sql, ATTRACTION_MAPPER);
+    SELECT ta.name, c.name AS city, ta.description, t.name AS tag_name
+    FROM tourist_attraction ta
+    LEFT JOIN city c ON ta.city_id = c.city_id
+    LEFT JOIN attraction_tag at ON ta.tourist_attraction_id = at.tourist_attraction_id
+    LEFT JOIN tag t ON at.tag_id = t.tag_id
+    ORDER BY ta.name, t.name
+  """;
+
+        return jdbcTemplate.query(sql, rs -> {
+            java.util.Map<String, TouristAttraction> map = new java.util.LinkedHashMap<>();
+            while (rs.next()) {
+                String name = rs.getString("name");
+                TouristAttraction a = map.get(name);
+                if (a == null) {
+                    a = new TouristAttraction(
+                            name,
+                            rs.getString("city"),
+                            rs.getString("description"),
+                            new java.util.ArrayList<>()
+                    );
+                    map.put(name, a);
+                }
+                String tag = rs.getString("tag_name");
+                if (tag != null) a.getTags().add(tag);
+            }
+            return new java.util.ArrayList<>(map.values());
+        });
     }
 
     public TouristAttraction getByName(String name) {
         String sql = """
-            SELECT ta.name, c.name AS city, ta.description
-            FROM tourist_attraction ta
-            LEFT JOIN city c ON ta.city_id = c.city_id
-            WHERE LOWER (ta.name) = LOWER (?)
-        """;
-        try {
-            return jdbcTemplate.queryForObject(sql, ATTRACTION_MAPPER, name);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+    SELECT ta.name, c.name AS city, ta.description, t.name AS tag_name
+    FROM tourist_attraction ta
+    LEFT JOIN city c ON ta.city_id = c.city_id
+    LEFT JOIN attraction_tag at ON ta.tourist_attraction_id = at.tourist_attraction_id
+    LEFT JOIN tag t ON at.tag_id = t.tag_id
+    WHERE LOWER(ta.name) = LOWER(?)
+  """;
+
+        return jdbcTemplate.query(sql, rs -> {
+            String aName = null, city = null, desc = null;
+            java.util.List<String> tags = new java.util.ArrayList<>();
+            boolean found = false;
+
+            while (rs.next()) {
+                if (!found) {
+                    aName = rs.getString("name");
+                    city  = rs.getString("city");
+                    desc  = rs.getString("description");
+                    found = true;
+                }
+                String tag = rs.getString("tag_name");
+                if (tag != null) tags.add(tag);
+            }
+            return found ? new TouristAttraction(aName, city, desc, tags) : null;
+        }, name);
     }
+
+
+
+
+
 
 
     /*** Adds a new tourist attraction to the list.*

@@ -9,6 +9,10 @@
 <p><strong>By:</strong> <span th:text="${attraction.city}"></span></p>
 <p><strong>Beskrivelse:</strong></p>
 <p th:text="${attraction.description}"></p>
+<p><strong>Tags:</strong></p>
+<ul>
+    <li th:each="tag : ${attraction.tags}" th:text="${tag}"></li>
+</ul>
 
 <a th:href="@{/attractions}">Tilbage til oversigten</a>
 </body>
