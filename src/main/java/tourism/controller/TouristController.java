@@ -37,21 +37,16 @@ public class TouristController {
         return "attractionDetail";
     }
 
-
-
-
     //    GET /attractions/{name}/tags
-    @GetMapping("{name}/tags")
+    @GetMapping("/{name}/tags")
     public String getTagsFromOneNamedAttraction(@PathVariable String name, Model model){
-        TouristAttraction a = service.getOneNamedAttraction(name);
-        if (a == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Attraction not found");
-
+        TouristAttraction a = service.getByName(name);
         model.addAttribute("attraction", a);
         model.addAttribute("tags", a.getTags() == null ? List.of() : a.getTags());
-        // Fallback: returner tom liste i stedet for null, så Thymeleaf kan loope sikkert
-
         return "tags";
     }
+
+
 
     //    GET /attractions/add
     @GetMapping("add")
@@ -72,7 +67,7 @@ public class TouristController {
     // GET /attractions/{name}/edit  -> show the edit form
     @GetMapping("{name}/edit")
     public String editOneNamedAttraction(@PathVariable String name, Model model) {
-        TouristAttraction attraction = service.getOneNamedAttraction(name);
+        TouristAttraction attraction = service.getByName(name);
         if (attraction == null) {
             return "redirect:/attractions";
         }

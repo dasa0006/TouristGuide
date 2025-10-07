@@ -29,22 +29,8 @@ public class TouristService {
 
 
 
-    /*** Finds a tourist attraction by its name.** @param attractionName the name of the attraction to find
-     * @return the matching {@link TouristAttraction}, or {@code null} if not found*/
-    public TouristAttraction getOneNamedAttraction(String attractionName) {
-        for (TouristAttraction attraction : repository.getAllAttractions()) {
-            if (attraction.getName().equals(attractionName)) {
-                return attraction;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Retrieves a list of all tags associated with the tourist attractions.
-     *
-     * @return a list of tags from all attractions
-     */
+    /*** Retrieves a list of all tags associated with the tourist attractions.
+     ** @return a list of tags from all attractions*/
     public List<String> getTags() {
         List<String> listOfTags = new ArrayList<>();
         for (TouristAttraction attraction : repository.getAllAttractions()) {
