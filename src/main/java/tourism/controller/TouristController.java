@@ -1,30 +1,21 @@
 package tourism.controller;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import tourism.model.TouristAttraction;
-
 import java.util.ArrayList;
-
-
 import org.springframework.ui.Model;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import tourism.service.TouristService;
-
 import java.util.List;
-
 
 @Controller
 @RequestMapping("/attractions")
 public class TouristController {
-
     private final TouristService service;
 
     public TouristController(TouristService service) {
@@ -39,10 +30,15 @@ public class TouristController {
     }
 
     //    GET /attractions/{name}
-    @GetMapping("{name}")
-    public String getOneNamedAttraction(@PathVariable String name){
-        return "";
+    @GetMapping("/{name}")
+    public String getByName(@PathVariable String name, Model model) {
+        TouristAttraction attraction = service.getByName(name);
+        model.addAttribute("attraction", attraction);
+        return "attractionDetail";
     }
+
+
+
 
     //    GET /attractions/{name}/tags
     @GetMapping("{name}/tags")

@@ -6,23 +6,11 @@ import tourism.repository.TouristRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Service class that provides business logic for managing tourist attractions.
- * Acts as an intermediary between the controller layer and the {@link TouristRepository}.
- */
 @Service
 public class TouristService {
 
-    /**
-     * Repository for accessing and modifying tourist attraction data.
-     */
     private final TouristRepository repository;
 
-    /**
-     * Constructs a new {@code TouristService} with the given repository.
-     *
-     * @param repository the {@link TouristRepository} to use for data access
-     */
     public TouristService(TouristRepository repository) {
         this.repository = repository;
     }
@@ -31,12 +19,18 @@ public class TouristService {
         return repository.getAllAttractions();
     }
 
-    /**
-     * Finds a tourist attraction by its name.
-     *
-     * @param attractionName the name of the attraction to find
-     * @return the matching {@link TouristAttraction}, or {@code null} if not found
-     */
+    public TouristAttraction getByName(String name) {
+        TouristAttraction a = repository.getByName(name);
+        if (a == null) {
+            throw new IllegalArgumentException("Attraction not found: " + name); //placeholder
+        }
+        return a;
+    }
+
+
+
+    /*** Finds a tourist attraction by its name.** @param attractionName the name of the attraction to find
+     * @return the matching {@link TouristAttraction}, or {@code null} if not found*/
     public TouristAttraction getOneNamedAttraction(String attractionName) {
         for (TouristAttraction attraction : repository.getAllAttractions()) {
             if (attraction.getName().equals(attractionName)) {

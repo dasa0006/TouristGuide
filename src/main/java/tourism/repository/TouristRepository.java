@@ -1,5 +1,6 @@
 package tourism.repository;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import tourism.model.TouristAttraction;
@@ -19,9 +20,7 @@ public class TouristRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    /**
-     * In-memory list of tourist attractions initialized with predefined data.
-     */
+    /*** In-memory list of tourist attractions initialized with predefined data.*/
     private final ArrayList<TouristAttraction> attractions = new ArrayList<>(List.of(
             new TouristAttraction("Tivoli", "København", "Forlystelsespark i hjertet af København.", List.of("forlystelser", "familie", "kultur")),
             new TouristAttraction("Nyhavn", "København", "Farverig havnepromenade med restauranter og barer.", List.of("havn", "restauranter", "historie")),
@@ -37,8 +36,7 @@ public class TouristRepository {
             new TouristAttraction("Legoland", "Billund", "Forlystelsespark i Billund bygget af LEGO-klodser.", List.of("forlystelser", "familie", "leg"))
     ));
 
-
-
+    // TODO: tags
 
     private static final RowMapper<TouristAttraction> ATTRACTION_MAPPER =
             (rs, rowNum) -> new TouristAttraction(
@@ -58,13 +56,24 @@ public class TouristRepository {
         return jdbcTemplate.query(sql, ATTRACTION_MAPPER);
     }
 
+    public TouristAttraction getByName(String name) {
+        String sql = """
+            SELECT ta.name, c.name AS city, ta.description
+            FROM tourist_attraction ta
+            LEFT JOIN city c ON ta.city_id = c.city_id
+            WHERE LOWER (ta.name) = LOWER (?)
+        """;
+        try {
+            return jdbcTemplate.queryForObject(sql, ATTRACTION_MAPPER, name);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
 
-    /**
-     * Adds a new tourist attraction to the list.
-     *
-     * @param touristAttraction the {@link TouristAttraction} to add.
-     * @return the added attraction if successful, otherwise {@code null}.
-     */
+
+    /*** Adds a new tourist attraction to the list.*
+     * * @param touristAttraction the {@link TouristAttraction} to add.
+     * @return the added attraction if successful, otherwise {@code null}.*/
     public TouristAttraction addOneNamedAttractionToList(TouristAttraction touristAttraction) {
         boolean isAddOpSuccess = attractions.add(touristAttraction);
         return isAddOpSuccess ? touristAttraction : null;
