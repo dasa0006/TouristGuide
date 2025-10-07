@@ -37,6 +37,9 @@ public class TouristRepository {
             new TouristAttraction("Legoland", "Billund", "Forlystelsespark i Billund bygget af LEGO-klodser.", List.of("forlystelser", "familie", "leg"))
     ));
 
+
+
+
     private static final RowMapper<TouristAttraction> ATTRACTION_MAPPER =
             (rs, rowNum) -> new TouristAttraction(
                     rs.getString("name"),

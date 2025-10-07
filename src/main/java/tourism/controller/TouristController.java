@@ -21,7 +21,7 @@ import tourism.service.TouristService;
 import java.util.List;
 
 
-@RestController
+@Controller
 @RequestMapping("/attractions")
 public class TouristController {
 
@@ -33,8 +33,9 @@ public class TouristController {
 
     //    GET /attractions
     @GetMapping
-    public List<TouristAttraction> getAttractions(){
-        return service.getAttractions();
+    public String getAttractions(Model model){
+        model.addAttribute("attractions", service.getAttractions());
+        return "attractionList";
     }
 
     //    GET /attractions/{name}
