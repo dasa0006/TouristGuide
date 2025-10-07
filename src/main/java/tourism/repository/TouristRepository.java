@@ -1,6 +1,7 @@
 package tourism.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import tourism.model.TouristAttraction;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
@@ -36,14 +37,24 @@ public class TouristRepository {
             new TouristAttraction("Legoland", "Billund", "Forlystelsespark i Billund bygget af LEGO-klodser.", List.of("forlystelser", "familie", "leg"))
     ));
 
-    /**
-     * Retrieves the full list of tourist attractions.
-     *
-     * @return a list of all {@link TouristAttraction} objects.
-     */
-    public ArrayList<TouristAttraction> getAllAttractions() {
-        return attractions;
+    private static final RowMapper<TouristAttraction> ATTRACTION_MAPPER =
+            (rs, rowNum) -> new TouristAttraction(
+                    rs.getString("name"),
+                    rs.getString("city"),
+                    rs.getString("description"),
+                    List.of()  // tags, tom liste for nu
+            );
+
+    public List<TouristAttraction> getAllAttractions() {
+        String sql = """
+        SELECT ta.name, c.name AS city, ta.description
+        FROM tourist_attraction ta
+        LEFT JOIN city c ON ta.city_id = c.city_id
+        ORDER BY ta.name
+    """;
+        return jdbcTemplate.query(sql, ATTRACTION_MAPPER);
     }
+
 
     /**
      * Adds a new tourist attraction to the list.

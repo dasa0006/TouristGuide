@@ -27,11 +27,6 @@ public class TouristService {
         this.repository = repository;
     }
 
-    /**
-     * Retrieves all tourist attractions.
-     *
-     * @return a list of all {@link TouristAttraction} objects
-     */
     public List<TouristAttraction> getAttractions() {
         return repository.getAllAttractions();
     }
@@ -96,7 +91,7 @@ public class TouristService {
      * @return the previous attraction that was replaced, or {@code null} if no match was found
      */
     public TouristAttraction updateAttraction(TouristAttraction updatedTouristAttraction) {
-        ArrayList<TouristAttraction> attractionsList = repository.getAllAttractions();
+        ArrayList<TouristAttraction> attractionsList = (ArrayList<TouristAttraction>) repository.getAllAttractions();
         for (int i = 0; i < attractionsList.size(); i++) {
             TouristAttraction oldAttraction = attractionsList.get(i);
             if (oldAttraction.getName().equals(updatedTouristAttraction.getName())) {
