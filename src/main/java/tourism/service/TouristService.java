@@ -43,20 +43,13 @@ public class TouristService {
         repository.insertAttraction(a);
     }
 
-
-
-
-
-    public TouristAttraction updateAttraction(TouristAttraction updatedTouristAttraction) {
-        ArrayList<TouristAttraction> attractionsList = (ArrayList<TouristAttraction>) repository.getAllAttractions();
-        for (int i = 0; i < attractionsList.size(); i++) {
-            TouristAttraction oldAttraction = attractionsList.get(i);
-            if (oldAttraction.getName().equals(updatedTouristAttraction.getName())) {
-                return repository.updateOneNamedAttraction(i, updatedTouristAttraction);
-            }
-        }
-        return null;
+    public void updateAttraction(TouristAttraction a) {
+        repository.updateAttraction(a);
     }
+
+
+
+
 
     /**
      * Deletes a tourist attraction by its name.

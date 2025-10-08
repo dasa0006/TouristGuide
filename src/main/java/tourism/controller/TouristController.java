@@ -64,31 +64,31 @@ public class TouristController {
         return "redirect:/attractions";
     }
 
-
-
-
-    // GET /attractions/{name}/edit  -> show the edit form
+    // vis form
+    //    GET /attractions/{name}/edit
     @GetMapping("{name}/edit")
     public String editOneNamedAttraction(@PathVariable String name, Model model) {
         TouristAttraction attraction = service.getByName(name);
-        if (attraction == null) {
-            return "redirect:/attractions";
-        }
-        model.addAttribute("attraction", attraction);               // object to bind
-        model.addAttribute("cities", service.getCities());   // dropdown options
-        model.addAttribute("tags", service.getTags());       // checkbox options
-        return "updateAttraction";                                   // view name
+        if (attraction == null) return "redirect:/attractions";
+
+        model.addAttribute("attraction", attraction);
+        model.addAttribute("cities", service.getCities());
+        model.addAttribute("allTags", service.getTags());
+        return "updateAttraction";
     }
 
+    // opdater
     //    POST /attractions/update
-    @PostMapping("/update")
-    public String updateAttraction(@ModelAttribute TouristAttraction form) {
-        if (form.getTags() == null) form.setTags(new ArrayList<>());
-        TouristAttraction a = service.updateAttraction(form);
-
-        if (a == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    @PostMapping("/{name}/update")
+    public String updateAttraction(@PathVariable String name, @ModelAttribute TouristAttraction form) {
+        form.setName(name);
+        service.updateAttraction(form);
         return "redirect:/attractions";
     }
+
+
+
+
 
     //    POST /attractions/delete/{name}
     @PostMapping("/delete/{name}")

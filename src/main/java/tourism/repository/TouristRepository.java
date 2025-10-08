@@ -143,9 +143,46 @@ public class TouristRepository {
         }
     }
 
+    public void updateAttraction(TouristAttraction a) {
+        if (a.getCity() == null || a.getCity().isBlank()) {
+            String sql = """
+          UPDATE tourist_attraction
+          SET description = ?
+          WHERE LOWER(name) = LOWER(?)
+        """;
+            jdbcTemplate.update(sql, a.getDescription(), a.getName());
+        } else {
+            String sql = """
+          UPDATE tourist_attraction
+          SET description = ?, city_id = (
+            SELECT city_id FROM city WHERE LOWER(name)=LOWER(?)
+          )
+          WHERE LOWER(name) = LOWER(?)
+        """;
+            jdbcTemplate.update(sql, a.getDescription(), a.getCity(), a.getName());
+        }
 
-    public TouristAttraction updateOneNamedAttraction(int index, TouristAttraction updatedTouristAttraction) {
-        return attractions.set(index, updatedTouristAttraction);
+        // slet gamle tags
+        jdbcTemplate.update("""
+      DELETE FROM attraction_tag
+      WHERE tourist_attraction_id = (
+        SELECT tourist_attraction_id FROM tourist_attraction WHERE LOWER(name)=LOWER(?)
+      )
+    """, a.getName());
+
+        // indsæt nye tags
+        if (a.getTags() != null) {
+            for (String tag : a.getTags()) {
+                if (tag == null || tag.isBlank()) continue;
+                jdbcTemplate.update("""
+              INSERT INTO attraction_tag(tourist_attraction_id, tag_id)
+              VALUES (
+                (SELECT tourist_attraction_id FROM tourist_attraction WHERE LOWER(name)=LOWER(?)),
+                (SELECT tag_id FROM tag WHERE LOWER(name)=LOWER(?))
+              )
+            """, a.getName(), tag);
+            }
+        }
     }
 
     public boolean deleteOneNamedAttractionFromList(String attractionName) {

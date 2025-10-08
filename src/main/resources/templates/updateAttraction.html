@@ -8,8 +8,11 @@
 </head>
 <body>
 <h1>Opdater attraktion</h1>
+<form th:action="@{/attractions/{name}/update(name=${attraction.name})}"
+      th:object="${attraction}"
+      method="post"
+      role="form">
 
-<form th:action="@{/attractions/update}" th:object="${attraction}" method="post">
     <label>Navn:</label>
     <input type="text" th:field="*{name}" readonly /><br/>
 
@@ -23,7 +26,7 @@
     </select><br/>
 
     <label>Tags:</label><br/>
-    <div th:each="t : ${tags}">
+    <div th:each="t : ${allTags}">
         <label>
             <input type="checkbox" th:field="*{tags}" th:value="${t}" />
             <span th:text="${t}"></span>
