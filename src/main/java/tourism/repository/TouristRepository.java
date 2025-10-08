@@ -5,10 +5,6 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Repository class for managing a list of tourist attractions.
- * Provides basic CRUD operations on an in-memory list of {@link TouristAttraction} objects.
- */
 @Repository
 public class TouristRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -17,7 +13,6 @@ public class TouristRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    /*** In-memory list of tourist attractions initialized with predefined data.*/
     private final ArrayList<TouristAttraction> attractions = new ArrayList<>(List.of(
             new TouristAttraction("Tivoli", "København", "Forlystelsespark i hjertet af København.", List.of("forlystelser", "familie", "kultur")),
             new TouristAttraction("Nyhavn", "København", "Farverig havnepromenade med restauranter og barer.", List.of("havn", "restauranter", "historie")),
@@ -33,98 +28,126 @@ public class TouristRepository {
             new TouristAttraction("Legoland", "Billund", "Forlystelsespark i Billund bygget af LEGO-klodser.", List.of("forlystelser", "familie", "leg"))
     ));
 
-    public java.util.List<TouristAttraction> getAllAttractions() {
-        String sql = """
-    SELECT ta.name, c.name AS city, ta.description, t.name AS tag_name
-    FROM tourist_attraction ta
-    LEFT JOIN city c ON ta.city_id = c.city_id
-    LEFT JOIN attraction_tag at ON ta.tourist_attraction_id = at.tourist_attraction_id
-    LEFT JOIN tag t ON at.tag_id = t.tag_id
-    ORDER BY ta.name, t.name
+    public List<TouristAttraction> getAllAttractions() {
+        String baseSql = """
+    SELECT tourist_attraction.name,
+           city.name AS city,
+           tourist_attraction.description
+    FROM tourist_attraction
+    LEFT JOIN city ON tourist_attraction.city_id = city.city_id
+    ORDER BY tourist_attraction.name
   """;
 
-        return jdbcTemplate.query(sql, rs -> {
-            java.util.Map<String, TouristAttraction> map = new java.util.LinkedHashMap<>();
-            while (rs.next()) {
-                String name = rs.getString("name");
-                TouristAttraction a = map.get(name);
-                if (a == null) {
-                    a = new TouristAttraction(
-                            name,
-                            rs.getString("city"),
-                            rs.getString("description"),
-                            new java.util.ArrayList<>()
-                    );
-                    map.put(name, a);
-                }
-                String tag = rs.getString("tag_name");
-                if (tag != null) a.getTags().add(tag);
-            }
-            return new java.util.ArrayList<>(map.values());
-        });
+        List<TouristAttraction> list = jdbcTemplate.query(baseSql, (rs, i) ->
+                new TouristAttraction(
+                        rs.getString("name"),
+                        rs.getString("city"),
+                        rs.getString("description"),
+                        new java.util.ArrayList<>()
+                )
+        );
+
+        String tagSql = """
+    SELECT tag.name
+    FROM tag
+    JOIN attraction_tag ON tag.tag_id = attraction_tag.tag_id
+    JOIN tourist_attraction ON tourist_attraction.tourist_attraction_id = attraction_tag.tourist_attraction_id
+    WHERE LOWER(tourist_attraction.name) = LOWER(?)
+    ORDER BY tag.name
+  """;
+
+        for (TouristAttraction a : list) {
+            List<String> tags = jdbcTemplate.query(tagSql, (rs, i) -> rs.getString(1), a.getName());
+            a.setTags(tags);
+        }
+
+        return list;
     }
 
     public TouristAttraction getByName(String name) {
-        String sql = """
-    SELECT ta.name, c.name AS city, ta.description, t.name AS tag_name
-    FROM tourist_attraction ta
-    LEFT JOIN city c ON ta.city_id = c.city_id
-    LEFT JOIN attraction_tag at ON ta.tourist_attraction_id = at.tourist_attraction_id
-    LEFT JOIN tag t ON at.tag_id = t.tag_id
-    WHERE LOWER(ta.name) = LOWER(?)
+        String oneSql = """
+    SELECT tourist_attraction.name,
+           city.name AS city,
+           tourist_attraction.description
+    FROM tourist_attraction
+    LEFT JOIN city ON tourist_attraction.city_id = city.city_id
+    WHERE LOWER(tourist_attraction.name) = LOWER(?)
   """;
 
-        return jdbcTemplate.query(sql, rs -> {
-            String aName = null, city = null, desc = null;
-            java.util.List<String> tags = new java.util.ArrayList<>();
-            boolean found = false;
+        List<TouristAttraction> found = jdbcTemplate.query(oneSql, (rs, i) ->
+                new TouristAttraction(
+                        rs.getString("name"),
+                        rs.getString("city"),
+                        rs.getString("description"),
+                        new java.util.ArrayList<>()
+                ), name);
 
-            while (rs.next()) {
-                if (!found) {
-                    aName = rs.getString("name");
-                    city  = rs.getString("city");
-                    desc  = rs.getString("description");
-                    found = true;
-                }
-                String tag = rs.getString("tag_name");
-                if (tag != null) tags.add(tag);
+        if (found.isEmpty()) return null;
+
+        String tagSql = """
+    SELECT tag.name
+    FROM tag
+    JOIN attraction_tag ON tag.tag_id = attraction_tag.tag_id
+    JOIN tourist_attraction ON tourist_attraction.tourist_attraction_id = attraction_tag.tourist_attraction_id
+    WHERE LOWER(tourist_attraction.name) = LOWER(?)
+    ORDER BY tag.name
+  """;
+
+        List<String> tags = jdbcTemplate.query(tagSql, (rs, i) -> rs.getString(1), name);
+        found.get(0).setTags(tags);
+
+        return found.get(0);
+    }
+
+    public List<String> listCities() {
+        return jdbcTemplate.query(
+                "SELECT name FROM city ORDER BY name",
+                (rs, i) -> rs.getString(1)
+        );
+    }
+
+    public List<String> listTags() {
+        return jdbcTemplate.query(
+                "SELECT name FROM tag ORDER BY name",
+                (rs, i) -> rs.getString(1)
+        );
+    }
+
+    public void insertAttraction(TouristAttraction a) {
+        if (a.getCity() == null || a.getCity().isBlank()) {
+            String sql = """
+        INSERT INTO tourist_attraction(name, description)
+        VALUES (?, ?)
+      """;
+            jdbcTemplate.update(sql, a.getName(), a.getDescription());
+        } else {
+            String sql = """
+        INSERT INTO tourist_attraction(name, description, city_id)
+        VALUES (?, ?, (SELECT city_id FROM city WHERE LOWER(name)=LOWER(?)))
+      """;
+            jdbcTemplate.update(sql, a.getName(), a.getDescription(), a.getCity());
+        }
+
+        if (a.getTags() != null) {
+            for (String tag : a.getTags()) {
+                if (tag == null || tag.isBlank()) continue;
+                String tagSql = """
+          INSERT INTO attraction_tag(tourist_attraction_id, tag_id)
+          VALUES (
+            (SELECT tourist_attraction_id FROM tourist_attraction WHERE LOWER(name)=LOWER(?)),
+            (SELECT tag_id FROM tag WHERE LOWER(name)=LOWER(?))
+          )
+        """;
+                jdbcTemplate.update(tagSql, a.getName(), tag);
             }
-            return found ? new TouristAttraction(aName, city, desc, tags) : null;
-        }, name);
+        }
     }
 
 
-
-
-
-
-
-    /*** Adds a new tourist attraction to the list.*
-     * * @param touristAttraction the {@link TouristAttraction} to add.
-     * @return the added attraction if successful, otherwise {@code null}.*/
-    public TouristAttraction addOneNamedAttractionToList(TouristAttraction touristAttraction) {
-        boolean isAddOpSuccess = attractions.add(touristAttraction);
-        return isAddOpSuccess ? touristAttraction : null;
-    }
-
-    /**
-     * Updates an existing tourist attraction at the specified index.
-     *
-     * @param index the index of the attraction to update.
-     * @param updatedTouristAttraction the new {@link TouristAttraction} data.
-     * @return the previous attraction that was replaced.
-     * @throws IndexOutOfBoundsException if the index is invalid.
-     */
     public TouristAttraction updateOneNamedAttraction(int index, TouristAttraction updatedTouristAttraction) {
         return attractions.set(index, updatedTouristAttraction);
     }
 
-    /**
-     * Deletes a tourist attraction from the list by its name.
-     *
-     * @param attractionName the name of the attraction to remove.
-     * @return {@code true} if an attraction was removed, {@code false} otherwise.
-     */
     public boolean deleteOneNamedAttractionFromList(String attractionName) {
         return attractions.removeIf(namedAttractionToRemove ->
                 namedAttractionToRemove.getName().equals(attractionName));

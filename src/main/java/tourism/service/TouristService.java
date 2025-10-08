@@ -1,8 +1,10 @@
 package tourism.service;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Service;
 import tourism.model.TouristAttraction;
 import tourism.repository.TouristRepository;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,49 +29,24 @@ public class TouristService {
         return a;
     }
 
-
-
-    /*** Retrieves a list of all tags associated with the tourist attractions.
-     ** @return a list of tags from all attractions*/
-    public List<String> getTags() {
-        List<String> listOfTags = new ArrayList<>();
-        for (TouristAttraction attraction : repository.getAllAttractions()) {
-            if (attraction.getTags() != null) {   // avoid NPE
-                listOfTags.addAll(attraction.getTags());
-            }
-        }
-        return listOfTags.stream().distinct().toList();
-    }
-
-    /**
-     * Retrieves a list of all cities where the tourist attractions are located.
-     *
-     * @return a list of city names from all attractions
-     */
     public List<String> getCities() {
-        List<String> listOfCities = new ArrayList<>();
-        for (TouristAttraction attraction : repository.getAllAttractions()) {
-            listOfCities.add(attraction.getCity());
-        }
-        return listOfCities.stream().distinct().toList();
+        return repository.listCities();
     }
 
-    /**
-     * Adds a new tourist attraction to the repository.
-     *
-     * @param attraction the {@link TouristAttraction} to add
-     * @return the added attraction if successful, otherwise {@code null}
-     */
-    public TouristAttraction addNamedAttraction(TouristAttraction attraction) {
-        return repository.addOneNamedAttractionToList(attraction);
+    public List<String> getTags() {
+        return repository.listTags();
     }
 
-    /**
-     * Updates an existing tourist attraction by matching its name.
-     *
-     * @param updatedTouristAttraction the updated {@link TouristAttraction} object
-     * @return the previous attraction that was replaced, or {@code null} if no match was found
-     */
+    public void addAttraction(TouristAttraction a){
+        if (a.getName()==null || a.getName().isBlank()) throw new IllegalArgumentException("Navn mangler");
+        if (a.getDescription()==null || a.getDescription().isBlank()) throw new IllegalArgumentException("Beskrivelse mangler");
+        repository.insertAttraction(a);
+    }
+
+
+
+
+
     public TouristAttraction updateAttraction(TouristAttraction updatedTouristAttraction) {
         ArrayList<TouristAttraction> attractionsList = (ArrayList<TouristAttraction>) repository.getAllAttractions();
         for (int i = 0; i < attractionsList.size(); i++) {

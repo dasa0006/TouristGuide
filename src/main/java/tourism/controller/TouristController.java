@@ -46,26 +46,27 @@ public class TouristController {
         return "tags";
     }
 
-
-
-
-
+    // vis form
     //    GET /attractions/add
-    @GetMapping("add")
+    @GetMapping("/add")
     public String addNamedAttraction(Model model){
-        TouristAttraction touristAttraction = new TouristAttraction();
-        model.addAttribute("touristAttraction", touristAttraction);
-
+        model.addAttribute("touristAttraction", new TouristAttraction());
         model.addAttribute("cities", service.getCities());
         model.addAttribute("allTags", service.getTags());
         return "addAttraction";
     }
-    //    POST /attractions/save
-    @PostMapping("save")
-    public String saveAttractions(@ModelAttribute TouristAttraction touristAttraction){
-        service.addNamedAttraction(touristAttraction);
+
+    // gem i db
+    //    POST /attractions/add
+    @PostMapping("/add")
+    public String addAttraction(@ModelAttribute("touristAttraction") TouristAttraction form) {
+        service.addAttraction(form);
         return "redirect:/attractions";
     }
+
+
+
+
     // GET /attractions/{name}/edit  -> show the edit form
     @GetMapping("{name}/edit")
     public String editOneNamedAttraction(@PathVariable String name, Model model) {
