@@ -1,11 +1,7 @@
 package tourism.service;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Service;
 import tourism.model.TouristAttraction;
 import tourism.repository.TouristRepository;
-
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -47,17 +43,10 @@ public class TouristService {
         repository.updateAttraction(a);
     }
 
-
-
-
-
-    /**
-     * Deletes a tourist attraction by its name.
-     *
-     * @param attractionName the name of the attraction to delete
-     * @return {@code true} if the attraction was successfully deleted, {@code false} otherwise
-     */
-    public boolean deleteAttraction(String attractionName) {
-        return repository.deleteOneNamedAttractionFromList(attractionName);
+    public void deleteAttraction(String name) {
+        boolean deleted = repository.deleteAttraction(name);
+        if (!deleted) {
+            throw new IllegalArgumentException("Attraction not found: " + name);
+        }
     }
 }

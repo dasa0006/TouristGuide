@@ -27,7 +27,7 @@
             <form th:action="@{/attractions/{name}/edit(name=${attraction.name})}" method="get">
                 <button>Opdater</button>
             </form>
-            <form th:action="@{/attractions/delete/{name}(name=${attraction.name})}" method="post">
+            <form th:action="@{/attractions/{name}/delete(name=${attraction.name})}" method="post">
                 <button>Slet</button>
             </form>
             <form th:action="@{/attractions/{name}/tags(name=${attraction.name})}" method="get">
