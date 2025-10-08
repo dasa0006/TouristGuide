@@ -1,104 +1,81 @@
--- ====================================
--- Insert cities
--- ====================================
+-- Cities
 INSERT INTO city (name) VALUES
     ('København'),
     ('Aarhus'),
-    ('Kværndrup'),
+    ('Odense'),
     ('Aalborg'),
     ('Helsingør'),
-    ('Odense'),
-    ('Bornholm'),
-    ('Skagen'),
-    ('Billund');
+    ('Billund'),
+    ('Rønne'),
+    ('Skagen');
 
--- ====================================
--- Insert tags
--- ====================================
+-- Tags
 INSERT INTO tag (name) VALUES
-    ('forlystelser'),
-    ('familie'),
-    ('kultur'),
-    ('havn'),
-    ('restauranter'),
-    ('historie'),
-    ('kunst'),
     ('museum'),
-    ('arkitektur'),
-    ('slot'),
-    ('have'),
-    ('dyr'),
+    ('kultur'),
+    ('familie'),
+    ('forlystelser'),
     ('natur'),
-    ('arkæologi'),
-    ('ruin'),
-    ('strand'),
-    ('geografi'),
-    ('leg');
+    ('slot'),
+    ('statue'),
+    ('strand');
 
--- ====================================
--- Insert tourist attractions
--- ====================================
+-- Attractions
 INSERT INTO tourist_attraction (name, description, city_id) VALUES
-    ('Tivoli', 'Forlystelsespark i hjertet af København.', 1),
-    ('Nyhavn', 'Farverig havnepromenade med restauranter og barer.', 1),
-    ('Den Lille Havfrue', 'Berømt statue inspireret af H.C. Andersen.', 1),
-    ('ARoS', 'Kunstmuseum i Aarhus med regnbuepanorama.', 2),
-    ('Egeskov Slot', 'Renæssanceslot på Fyn omgivet af voldgrav.', 3),
-    ('Aalborg Zoo', 'Dyrepark med mere end 100 forskellige arter.', 4),
-    ('Moesgaard Museum', 'Museum i Aarhus med arkæologi og kulturhistorie.', 2),
-    ('Kronborg Slot', 'Renæssanceslot i Helsingør, kendt fra Shakespeares Hamlet.', 5),
-    ('Odense Zoo', 'Familievenlig zoologisk have på Fyn.', 6),
-    ('Hammershus', 'Nordeuropas største borgruin på Bornholm.', 7),
-    ('Grenen', 'Danmarks nordligste punkt, hvor to have mødes.', 8),
-    ('Legoland', 'Forlystelsespark i Billund bygget af LEGO-klodser.', 9);
+    ('Tivoli', 'Forlystelsespark i hjertet af København.', (SELECT city_id FROM city WHERE name='København')),
+    ('Nyhavn', 'Farverig havnepromenade med restauranter og barer.', (SELECT city_id FROM city WHERE name='København')),
+    ('Den Lille Havfrue', 'Berømt statue inspireret af H.C. Andersen.', (SELECT city_id FROM city WHERE name='København')),
+    ('ARoS', 'Kunstmuseum med regnbuepanorama.', (SELECT city_id FROM city WHERE name='Aarhus')),
+    ('Moesgaard Museum', 'Arkæologi og kulturhistorie.', (SELECT city_id FROM city WHERE name='Aarhus')),
+    ('Kronborg Slot', 'Renæssanceslot kendt fra Shakespeares Hamlet.', (SELECT city_id FROM city WHERE name='Helsingør')),
+    ('Legoland', 'Forlystelsespark bygget af LEGO.', (SELECT city_id FROM city WHERE name='Billund')),
+    ('Hammershus', 'Nordeuropas største borgruin.', (SELECT city_id FROM city WHERE name='Rønne'));
 
--- ====================================
--- Link tags to attractions (many-to-many)
--- ====================================
--- Tivoli
-INSERT INTO attraction_tag VALUES
-    (1, 1), (1, 2), (1, 3);
+-- Attraction ↔ Tag
+-- Tivoli 
+INSERT INTO attraction_tag (tourist_attraction_id, tag_id)
+SELECT ta.tourist_attraction_id, t.tag_id
+FROM tourist_attraction ta, tag t
+WHERE ta.name='Tivoli' AND t.name IN ('forlystelser','familie','kultur');
 
 -- Nyhavn
-INSERT INTO attraction_tag VALUES
-    (2, 4), (2, 5), (2, 6);
+INSERT INTO attraction_tag (tourist_attraction_id, tag_id)
+SELECT ta.tourist_attraction_id, t.tag_id
+FROM tourist_attraction ta, tag t
+WHERE ta.name='Nyhavn' AND t.name IN ('kultur','strand');
 
 -- Den Lille Havfrue
-INSERT INTO attraction_tag VALUES
-    (3, 3), (3, 6);
+INSERT INTO attraction_tag (tourist_attraction_id, tag_id)
+SELECT ta.tourist_attraction_id, t.tag_id
+FROM tourist_attraction ta, tag t
+WHERE ta.name='Den Lille Havfrue' AND t.name IN ('statue','kultur');
 
 -- ARoS
-INSERT INTO attraction_tag VALUES
-    (4, 7), (4, 8), (4, 9);
-
--- Egeskov Slot
-INSERT INTO attraction_tag VALUES
-    (5, 10), (5, 6), (5, 11);
-
--- Aalborg Zoo
-INSERT INTO attraction_tag VALUES
-    (6, 12), (6, 2), (6, 13);
+INSERT INTO attraction_tag (tourist_attraction_id, tag_id)
+SELECT ta.tourist_attraction_id, t.tag_id
+FROM tourist_attraction ta, tag t
+WHERE ta.name='ARoS' AND t.name IN ('museum','kultur');
 
 -- Moesgaard Museum
-INSERT INTO attraction_tag VALUES
-    (7, 8), (7, 6), (7, 14);
+INSERT INTO attraction_tag (tourist_attraction_id, tag_id)
+SELECT ta.tourist_attraction_id, t.tag_id
+FROM tourist_attraction ta, tag t
+WHERE ta.name='Moesgaard Museum' AND t.name IN ('museum','kultur','natur');
 
 -- Kronborg Slot
-INSERT INTO attraction_tag VALUES
-    (8, 10), (8, 3), (8, 6);
-
--- Odense Zoo
-INSERT INTO attraction_tag VALUES
-    (9, 12), (9, 2), (9, 13);
-
--- Hammershus
-INSERT INTO attraction_tag VALUES
-    (10, 15), (10, 6), (10, 9);
-
--- Grenen
-INSERT INTO attraction_tag VALUES
-    (11, 13), (11, 16), (11, 17);
+INSERT INTO attraction_tag (tourist_attraction_id, tag_id)
+SELECT ta.tourist_attraction_id, t.tag_id
+FROM tourist_attraction ta, tag t
+WHERE ta.name='Kronborg Slot' AND t.name IN ('slot','kultur');
 
 -- Legoland
-INSERT INTO attraction_tag VALUES
-    (12, 1), (12, 2), (12, 18);
+INSERT INTO attraction_tag (tourist_attraction_id, tag_id)
+SELECT ta.tourist_attraction_id, t.tag_id
+FROM tourist_attraction ta, tag t
+WHERE ta.name='Legoland' AND t.name IN ('forlystelser','familie');
+
+-- Hammershus
+INSERT INTO attraction_tag (tourist_attraction_id, tag_id)
+SELECT ta.tourist_attraction_id, t.tag_id
+FROM tourist_attraction ta, tag t
+WHERE ta.name='Hammershus' AND t.name IN ('natur','kultur','slot');

@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1 class="add-attraction-form-title">Tilføj Turistattraktion</h1>
-<form action="#" class="add-attraction-form" role="form" method="post" th:action="@{/attractions/save}" th:object="${touristAttraction}">
+<form action="#" class="add-attraction-form" role="form" method="post" th:action="@{/attractions/add}" th:object="${touristAttraction}">
     <label>
         Navn:
         <input type="text" th:field="*{name}" />

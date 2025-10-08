@@ -2,8 +2,8 @@
 -- Table: city
 -- ====================================
 CREATE TABLE city (
-    city_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+                      city_id INT AUTO_INCREMENT PRIMARY KEY,
+                      name VARCHAR(100) NOT NULL
 );
 
 -- ====================================
@@ -36,9 +36,9 @@ CREATE TABLE attraction_tag (
     tag_id INT NOT NULL,
     PRIMARY KEY (tourist_attraction_id, tag_id),
     FOREIGN KEY (tourist_attraction_id)
-    REFERENCES tourist_attraction(tourist_attraction_id)
-    ON DELETE CASCADE,
+        REFERENCES tourist_attraction(tourist_attraction_id)
+        ON DELETE CASCADE,
     FOREIGN KEY (tag_id)
-    REFERENCES tag(tag_id)
-    ON DELETE CASCADE
+        REFERENCES tag(tag_id)
+        ON DELETE CASCADE
 );
