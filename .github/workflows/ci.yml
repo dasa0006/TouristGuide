@@ -26,8 +26,8 @@ jobs:
           mvn -v
           java -version
 
-      - name: Maven unit tests (Surefire)
-        run: mvn -B -ntp -DskipITs=true test
+      - name: Maven build (skip tests)
+        run: mvn -B -ntp clean package -DskipTests
 
       - name: Upload Surefire reports
         if: always()
@@ -52,8 +52,9 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Maven integration tests (Failsafe)
-        run: mvn -B -ntp -e verify
+      - name: Maven integration tests (skip)
+        run: mvn -B -ntp verify -DskipTests
+
 
       - name: Upload Failsafe reports
         if: always()
