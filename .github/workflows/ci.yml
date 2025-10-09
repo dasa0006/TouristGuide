@@ -2,9 +2,9 @@ name: CI (Java 21 / Maven + Qodana)
 
 on:
   push:
-    branches: [ main, master, PhaberenWorkFLow ]
+    branches: [ main, master, PhaberenWorkFlow ]
   pull_request:
-    branches: [ main, master, PhaberenWorkFLow ]
+    branches: [ main, master, PhaberenWorkFlow ]
 
 jobs:
   build-and-unit:
