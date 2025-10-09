@@ -1,7 +1,7 @@
 -- ====================================
 -- Table: city
 -- ====================================
-CREATE TABLE city (
+CREATE TABLE IF NOT EXISTS city (
                       city_id INT AUTO_INCREMENT PRIMARY KEY,
                       name VARCHAR(100) NOT NULL
 );
@@ -9,7 +9,7 @@ CREATE TABLE city (
 -- ====================================
 -- Table: tourist_attraction
 -- ====================================
-CREATE TABLE tourist_attraction (
+CREATE TABLE IF NOT EXISTS tourist_attraction (
     tourist_attraction_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE tourist_attraction (
 -- ====================================
 -- Table: tag
 -- ====================================
-CREATE TABLE tag (
+CREATE TABLE IF NOT EXISTS tag (
     tag_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE
 );
@@ -31,7 +31,7 @@ CREATE TABLE tag (
 -- ====================================
 -- Table: attraction_tag (junction table)
 -- ====================================
-CREATE TABLE attraction_tag (
+CREATE TABLE IF NOT EXISTS attraction_tag (
     tourist_attraction_id INT NOT NULL,
     tag_id INT NOT NULL,
     PRIMARY KEY (tourist_attraction_id, tag_id),
