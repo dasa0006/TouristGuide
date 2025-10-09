@@ -1,0 +1,109 @@
+name: CI (Java 21 / Maven + Qodana)
+
+on:
+  push:
+    branches: [ main, master, PhaberenWorkFLow ]
+  pull_request:
+    branches: [ main, master, PhaberenWorkFLow ]
+
+jobs:
+  build-and-unit:
+    name: Build + Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Show tool versions
+        run: |
+          mvn -v
+          java -version
+
+      - name: Maven unit tests (Surefire)
+        run: mvn -B -ntp -DskipITs=true test
+
+      - name: Upload Surefire reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: "**/target/surefire-reports/**"
+          if-no-files-found: ignore
+
+  integration-tests:
+    name: Integration tests (Failsafe)
+    runs-on: ubuntu-latest
+    needs: build-and-unit
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Maven integration tests (Failsafe)
+        run: mvn -B -ntp -e verify
+
+      - name: Upload Failsafe reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failsafe-reports
+          path: "**/target/failsafe-reports/**"
+          if-no-files-found: ignore
+
+  package:
+    name: Package application (fat JAR)
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Maven package
+        run: mvn -B -ntp -DskipTests package
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: "**/target/*.jar"
+          if-no-files-found: error
+
+  qodana:
+    name: Qodana Static Analysis
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Qodana scan
+        uses: JetBrains/qodana-action@v2024.2.6
+        with:
+          upload-result: true
+          results-dir: qodana
+        # Hvis du bruger Qodana Cloud, tilføj en secret:
+        # env:
+        #   QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
