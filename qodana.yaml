@@ -1,6 +1,6 @@
 #Qodana YML
 version: "1.0"
-linter: jetbrains/qodana-jvm:2024.2
+linter: jetbrains/qodana-jvm-community:2024.2
 projectJDK: "21"
 profile:
   name: qodana.recommended
@@ -10,3 +10,4 @@ exclude:
       - target
       - .idea
 failThreshold: 100
+
